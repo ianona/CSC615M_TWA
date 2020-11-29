@@ -39,6 +39,9 @@ class StateMachine:
 
 			char = test[self.arrow]
 			transition = self.states[self.currentState].getTransition(char)
+			if transition == -1:
+				print("Error: No transition on state " + str(self.currentState) + " for input " + char)
+				break
 			self.currentState = int(transition)
 
 			move += '. Transitioning to state ' + str(transition) + ' on input ' + char
@@ -54,9 +57,8 @@ class StateMachine:
 				self.arrow += 1
 			elif self.states[self.currentState].getMove() == 'left':
 				self.arrow -= 1
-
-
-		print(self.states[self.currentState].getMove().upper())
+			else:
+				print(self.states[self.currentState].getMove().upper())
 
 class State:
 	def __init__(self, sid, move):
@@ -68,7 +70,10 @@ class State:
 		self.transitions[transition[0]] = int(transition[1])
 
 	def getTransition(self, symbol):
-		return self.transitions[symbol]
+		if symbol in self.transitions:
+			return self.transitions[symbol]
+		else:
+			return -1;
 
 	def getMove(self):
 		return self.move
@@ -100,22 +105,22 @@ if __name__ == "__main__":
 			line_count += 1
 		print(f'TWA loaded. Processed {line_count} lines.')
 
-# print(states)
-sm = StateMachine(states)
+	# print(states)
+	sm = StateMachine(states)
 
-filepath = inputs_filename
-with open(filepath) as fp:
-	line = fp.readline()
-	cnt = 1
-	print("Starting tests...")
-	print('--------------------------')
-	while line:
-		print("Line {}: {}".format(cnt, line.strip()))
-		sm.eval(line.strip())
-		print('--------')
+	filepath = inputs_filename
+	with open(filepath) as fp:
 		line = fp.readline()
-		cnt += 1
-	print("Tests finished! Program terminating...")
+		cnt = 1
+		print("Starting tests...")
+		print('--------------------------')
+		while line:
+			print("Line {}: {}".format(cnt, line.strip()))
+			sm.eval(line.strip())
+			print('--------')
+			line = fp.readline()
+			cnt += 1
+		print("Tests finished! Program terminating...")
 
 
 
